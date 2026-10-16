@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora Mobile</title>
+    <style>
+        :root {
+            --bg-color: #090d16;
+            --card-bg: #131c2e;
+            --card-border: #1e293b;
+            --text-color: #f1f5f9;
+            --text-muted: #64748b;
+            --primary: #38bdf8;
+            --accent: #10b981;
+            --input-bg: #1a263f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 12px 12px 110px 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* Estilo do Cabeçalho com Logo */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-top: 8px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #38bdf8, #0369a1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-size: 1.15rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .header-text p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group.full {
+            grid-column: span 2;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px 10px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        input[readonly] {
+            color: #94a3b8;
+            background-color: #0f172a;
+        }
+
+        .info-pill {
+            font-size: 0.65rem;
+            color: var(--primary);
+            margin-top: 3px;
+        }
+
+        /* Barra Inferior Fixa */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(19, 28, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--card-border);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .bottom-bar .info-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .bottom-bar .main-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .bottom-bar .sub-details {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-frame">
+        <header>
+            <div class="logo-icon">⏳</div>
+            <div class="header-text">
+                <h1>Calculadora Salarial</h1>
+                <p>Controle de Horas Extras e Proventos</p>
+            </div>
+        </header>
+
+        <!-- Seção 1: Dados Base -->
+        <div class="card">
+            <div class="card-title">1. Base de Cálculo</div>
+            
+            <div class="input-group full" style="margin-bottom: 8px;">
+                <label>Salário Base (R$)</label>
+                <input type="number" id="salario" value="2084.97" step="0.01" oninput="calcular()">
+            </div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Salário Mínimo</label>
+                    <input type="number" id="salarioMinimo" value="1502.00" step="0.01" oninput="calcular()">
+                </div>
+                <div class="input-group">
+                    <label>Insalubridade (40%)</label>
+                    <input type="number" id="insalubridade" value="0" readonly>
+                </div>
+            </div>
+            <div class="info-pill">Cálculo automático baseado no salário mínimo atual</div>
+        </div>
+
+        <!-- Seção 2 e Seção 3 Lado a Lado -->
+        <div class="cards-row">
+            <!-- Card 2: Adicionais e Jornada -->
+            <div class="card">
+                <div class="card-title">2. Adicionais</div>
+                
+                <div class="input-group full">
+                    <label>Anuênio (%)</label>
+                    <input type="number" id="anuenioPercent" value="13" step="0.1" oninput="calcular()">
+                </div>
+
+                <div class="input-group full">
+                    <label>Anuênio (R$)</label>
+                    <input type="number" id="anuenio" value="0" readonly>
+                </div>
+
+                <div class="input-group full">
+                    <label>Horas Mensais</label>
+                    <input type="number" id="horasMensais" value="200" step="1" oninput="calcular()">
+                </div>
+
+                <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--card-border); font-size: 0.7rem;">
+                    <span style="color: var(--text-muted);">Hora Normal:</span><br>
+                    <strong id="lblHoraNormal" style="color: var(--primary);">R$ 0,00</strong>
+                </div>
+            </div>
+
+            <!-- Card 3: Horas Extras & Descontos -->
+            <div class="card">
+                <div class="card-title">3. HE & Descontos</div>
+                
+                <div class="input-group">
+                    <label>HE 50%</label>
+                    <input type="number" id="he50" value="0" step="0.5" placeholder="Qtd" oninput="calcular()">
+                </div>
+
+                <div class="input-group">
+                    <label>HE 100%</label>
+                    <input type="number" id="he100" value="0" step="0.5" placeholder="Qtd" oninput="calcular()">
+                </div>
+
+                <div class="input-group full">
+                    <label>Descontos (R$)</label>
+                    <input type="number" id="descontos" value="0.00" step="0.01" placeholder="Total" oninput="calcular()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra Rodapé Fixa Estilo App Mobile -->
+    <div class="bottom-bar">
+        <div>
+            <div class="info-label">Total Líquido Estimado</div>
+            <div class="main-value" id="lblTotalLiquido">R$ 0,00</div>
+        </div>
+        <div class="sub-details" id="lblDetalhesHE">
+            HE: R$ 0,00<br>Desc: R$ 0,00
+        </div>
+    </div>
+
+    <script>
+        function formatarMoeda(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+        
+        function calcular() {
+            const salario = parseFloat(document.getElementById('salario').value) || 0;
+            const salarioMinimo = parseFloat(document.getElementById('salarioMinimo').value) || 0;
+            
+            const insalubridade = salarioMinimo * 0.40;
+            document.getElementById('insalubridade').value = insalubridade.toFixed(2);
+
+            const anuenioPercent = parseFloat(document.getElementById('anuenioPercent').value) || 0;
+            const anuenio = salario * (anuenioPercent / 100);
+            document.getElementById('anuenio').value = anuenio.toFixed(2);
+
+            const horasMensais = parseFloat(document.getElementById('horasMensais').value) || 200;
+            const q50 = parseFloat(document.getElementById('he50').value) || 0;
+            const q100 = parseFloat(document.getElementById('he100').value) || 0;
+            const descontos = parseFloat(document.getElementById('descontos').value) || 0;
+
+            const baseTotal = salario + insalubridade + anuenio;
+            const horaNormal = baseTotal / (horasMensais > 0 ? horasMensais : 200);
+
+            const total50 = q50 * (horaNormal * 1.50);
+            const total100 = q100 * (horaNormal * 2.00);
+            const totalHorasExtras = total50 + total100;
+
+            const totalBruto = salario + anuenio + insalubridade + totalHorasExtras;
+            const totalLiquido = totalBruto - descontos;
+
+            document.getElementById('lblHoraNormal').innerText = formatarMoeda(horaNormal);
+            document.getElementById('lblTotalLiquido').innerText = formatarMoeda(totalLiquido);
+            document.getElementById('lblDetalhesHE').innerHTML = `HE: ${formatarMoeda(totalHorasExtras)}<br>Desc: -${formatarMoeda(descontos)}`;
+        }
+
+        window.onload = calcular;
+    </script>
+</body>
+</html>
